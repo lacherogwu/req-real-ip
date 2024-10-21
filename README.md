@@ -1,4 +1,4 @@
-# Req Real IP
+# req-real-ip
 
 This library allows you to get the real ip address of a user. It gives you the real ip address even if the request header is modified.
 
