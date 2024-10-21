@@ -1,6 +1,6 @@
 import requestIp, { Request } from 'request-ip';
 
-function checkIPFormat(userIp?: string | string[] | null) {
+function checkIPFormat(userIp?: string | null) {
 	try {
 		return !userIp || userIp === undefined || userIp === null || (String(userIp).indexOf('.') <= -1 && String(userIp).indexOf(':') <= -1);
 	} catch (err) {
@@ -14,7 +14,7 @@ export type Config = {
 
 export function detect(req: Request, config?: Config) {
 	try {
-		let userIp = config?.cloudflare ? req.headers?.['cf-connecting-ip'] : null;
+		let userIp = (config?.cloudflare ? req.headers?.['cf-connecting-ip'] : null) as string | null;
 		const rhost = req.headers?.['remote-host'];
 		let forwarded = req.headers?.['x-forwarded-for'];
 		const real = req.headers?.['x-real-ip'];
@@ -25,13 +25,13 @@ export function detect(req: Request, config?: Config) {
 		}
 
 		if (checkIPFormat(userIp)) {
-			var hdip = String(forwarded).split(',');
-			userIp = hdip[hdip.length - 1];
+			const hdip = String(forwarded).split(',');
+			userIp = hdip[hdip.length - 1] ?? null;
 		}
 
 		if (checkIPFormat(userIp)) {
-			var hdip2 = String(real).split(',');
-			userIp = hdip2[hdip2.length - 1];
+			const hdip2 = String(real).split(',');
+			userIp = hdip2[hdip2.length - 1] ?? null;
 		}
 
 		if (checkIPFormat(userIp)) {
